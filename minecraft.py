@@ -19,7 +19,7 @@ class Minecraft:
     _generatedFunction: typing.List[str] = list()
 
     @classmethod
-    def init(cls, name: str, version: str = '1.19.2', description=""):
+    def init(cls, name: str, version: str = '1.19.2', description="", directory="./"):
         version = list(map(int, version.split('.')))
         version = [version[i] if i < len(version) else 0 for i in range(3)]
         match version:
@@ -45,6 +45,7 @@ class Minecraft:
                 raise RuntimeError(f'Wrong version of Minecraft: {".".join(list(map(str, version)))}')
         cls._description = description
         cls._namespace = name
+        os.chdir(directory)
         if os.path.exists(cls._namespace):
             shutil.rmtree(cls._namespace)
         os.mkdir(cls._namespace)
@@ -103,44 +104,70 @@ class Minecraft:
         return lambda x: cls.function(x, *f)
 
     @classmethod
+    def condition(cls, *f: typing.Any):
+        if isinstance(f[0], typing.Callable):
+            f: typing.Callable = f[0]
+
+        return lambda x: cls.function(x, *f)
+
+    @classmethod
+    def returnment(cls, value: typing.Any):
+        pass
+
+    @classmethod
     def do(cls, command: str) -> None:
         cls._generatedFunction.append(command)
 
     @classmethod
-    def print(cls, *value: typing.List[typing.Any]) -> None:
-        cls.do(f'say {value[0]}')
+    def print(cls, *values: typing.Any) -> None:
+        result = list()
+        for value in values:
+            if isinstance(value, Score):
+                value: Score
+                result.append({"score": {"objective": cls._namespace, "name": value._name}})
+            if isinstance(value, str):
+                value: str
+                result.append({"text": value})
+        cls.do(f'tellraw @a {json.dumps(result)}')
 
 
-_Int = typing.TypeVar('_Int', bound='Int')
+_Score = typing.TypeVar('_Score', bound='Score')
 
 
-class Int:
+class Score:
     _name: str
     _constantValues: typing.Set[int] = list()
 
-    def __init__(self, name: str, value: int | None = 0):
+    def __init__(self, name: str, value: int | _Score | None = 0):
         self._name = name
         if value is not None:
             if name.startswith('__'):
                 warnings.warn('We don\'t recommend you to use \'__\' construction in variable name,'
                               ' it can make errors', RuntimeWarning)
-            Minecraft.do(f'scoreboard players set {self._name} {Minecraft._namespace} {value}')
+            if isinstance(value, int):
+                value: int
+                Minecraft.do(f'scoreboard players set {self._name} {Minecraft._namespace} {value}')
+            if isinstance(value, Score):
+                value: Score
+                Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
+                             f'= {value._name} {Minecraft._namespace}')
 
-    def set(self, other: int | _Int):
+    def set(self, other: int | _Score):
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players set {self._name} {Minecraft._namespace} {other}')
         if isinstance(other, self.__class__):
             Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
                          f'= {other._name} {Minecraft._namespace}')
 
-    def __iadd__(self, other: int | _Int):
+    def __iadd__(self, other: int | _Score):
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players add {self._name} {Minecraft._namespace} {other}')
         if isinstance(other, self.__class__):
             Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
                          f'+= {other._name} {Minecraft._namespace}')
+        return self
 
-    def __add__(self, other: int | _Int):
+    def __add__(self, other: int | _Score):
         iter = 0
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players operation __{calculatorPrefix}{iter} {Minecraft._namespace} '
@@ -155,14 +182,15 @@ class Int:
                          f'+= {other._name} {Minecraft._namespace}')
             return self.__class__(f'__{calculatorPrefix}{iter}', None)
 
-    def __isub__(self, other: int | _Int):
+    def __isub__(self, other: int | _Score):
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players remove {self._name} {Minecraft._namespace} {other}')
         if isinstance(other, self.__class__):
             Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
                          f'-= {other._name} {Minecraft._namespace}')
+        return self
 
-    def __sub__(self, other: int | _Int):
+    def __sub__(self, other: int | _Score):
         iter = 0
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players operation __{calculatorPrefix}{iter} {Minecraft._namespace} '
@@ -177,7 +205,7 @@ class Int:
                          f'-= {other._name} {Minecraft._namespace}')
             return self.__class__(f'__{calculatorPrefix}{iter}', None)
 
-    def __imul__(self, other: int | _Int):
+    def __imul__(self, other: int | _Score):
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
                          f'*= __{other} {Minecraft._namespace}')
@@ -190,8 +218,9 @@ class Int:
         if isinstance(other, self.__class__):
             Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
                          f'*= {other._name} {Minecraft._namespace}')
+        return self
 
-    def __mul__(self, other: int | _Int):
+    def __mul__(self, other: int | _Score):
         iter = 0
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players operation __{calculatorPrefix}{iter} {Minecraft._namespace} '
@@ -213,7 +242,7 @@ class Int:
                          f'*= {other._name} {Minecraft._namespace}')
             return self.__class__(f'__{calculatorPrefix}{iter}', None)
 
-    def __idiv__(self, other: int | _Int):
+    def __idiv__(self, other: int | _Score):
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
                          f'/= __{other} {Minecraft._namespace}')
@@ -226,8 +255,9 @@ class Int:
         if isinstance(other, self.__class__):
             Minecraft.do(f'scoreboard players operation {self._name} {Minecraft._namespace} '
                          f'/= {other._name} {Minecraft._namespace}')
+        return self
 
-    def __mul__(self, other: int | _Int):
+    def __truediv__(self, other: int | _Score):
         iter = 0
         if isinstance(other, int):
             Minecraft.do(f'scoreboard players operation __{calculatorPrefix}{iter} {Minecraft._namespace} '
@@ -248,3 +278,11 @@ class Int:
             Minecraft.do(f'scoreboard players operation __{calculatorPrefix}{iter} {Minecraft._namespace} '
                          f'/= {other._name} {Minecraft._namespace}')
             return self.__class__(f'__{calculatorPrefix}{iter}', None)
+
+
+_Bool = typing.TypeVar('_Bool', bound='Bool')
+
+
+class Bool:
+    def __init__(self):
+        pass

@@ -1,17 +1,15 @@
-from minecraft import Minecraft, Int
-
-Minecraft.init('example', '1.19.2')
+from minecraft import Minecraft, Score
 
 
-@Minecraft.function('setup')
-def setup():
-    pass
+Minecraft.init(name='const', version='1.18.2', directory='./')
 
 
-@Minecraft.function('update')
-def main():
-    A = Int('a', 5)
-    A.set(A * 6)
+@Minecraft.function
+def factorial(x: Score):
+    @Minecraft.condition(x == 1)
+    def _():
+        Minecraft.returnment(1)
+    Minecraft.returnment(factorial(x - 1) * x)
 
 
 Minecraft.end()
