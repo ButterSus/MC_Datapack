@@ -11,47 +11,37 @@
 > It haven't any licenses or anything like that because it's not
 > official project or something else
 
-[//]: # (<p align="center">)
+<p align="left">
+  <a href="https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=620&quality=85&fit=max&s=10cfd0078905457b68dae0f690f8cf19">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Carbon is released under the Apache-2.0 license" />
+  </a>
+</p>
+<p align="right">
+  <a href="https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=620&quality=85&fit=max&s=10cfd0078905457b68dae0f690f8cf19">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Carbon is released under the Apache-2.0 license" />
+  </a>
+</p>
+<p align="left">
+  <a href="https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=620&quality=85&fit=max&s=10cfd0078905457b68dae0f690f8cf19">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Carbon is released under the Apache-2.0 license" />
+  </a>
+</p>
+<p align="right">
+  <a href="https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=620&quality=85&fit=max&s=10cfd0078905457b68dae0f690f8cf19">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Carbon is released under the Apache-2.0 license" />
+  </a>
+</p>
+<p align="left">
+  <a href="https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=620&quality=85&fit=max&s=10cfd0078905457b68dae0f690f8cf19">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Carbon is released under the Apache-2.0 license" />
+  </a>
+</p>
 
-[//]: # (  <a href="https://github.com/carbon-design-system/carbon/blob/master/LICENSE">)
+## Getting started
 
-[//]: # (    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Carbon is released under the Apache-2.0 license" />)
+If you're just getting started, check out [`@carbon/react`](./packages/react).
 
-[//]: # (  </a>)
-
-[//]: # (  <a href="https://github.com/carbon-design-system/carbon/actions/workflows/ci.yml">)
-
-[//]: # (    <img src="https://github.com/carbon-design-system/carbon/actions/workflows/ci.yml/badge.svg" alt="CI workflow status" />)
-
-[//]: # (  </a>)
-
-[//]: # (  <a href="https://lerna.js.org/">)
-
-[//]: # (    <img src="https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg" alt="Maintained with Lerna" />)
-
-[//]: # (  </a>)
-
-[//]: # (  <a href="https://github.com/carbon-design-system/carbon/blob/master/.github/CONTRIBUTING.md">)
-
-[//]: # (    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome" />)
-
-[//]: # (  </a>)
-
-[//]: # (  <a href="https://gitter.im/carbondesignsystem/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge">)
-
-[//]: # (    <img src="https://badges.gitter.im/carbondesignsystem/community.svg" alt="Chat with us on Gitter" />)
-
-[//]: # (  </a>)
-
-[//]: # (</p>)
-
-[//]: # (## Getting started)
-
-[//]: # ()
-[//]: # (If you're just getting started, check out [`@carbon/react`]&#40;./packages/react&#41;.)
-
-[//]: # ()
-[//]: # (We also have community-contributed components for the following technologies:)
+We also have community-contributed components for the following technologies:
 
 [//]: # ()
 [//]: # (- [Angular]&#40;https://github.com/IBM/carbon-components-angular&#41;)
