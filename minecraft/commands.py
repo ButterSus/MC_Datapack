@@ -22,15 +22,6 @@ class Commands:
         """
         self.framework.temporary.function.append(command)
 
-    def createScoreboard(self, name: str, criterion: str = 'dummy') -> None:
-        """
-        Creates scoreboard
-        """
-        self.exec(f'scoreboard objectives add {name} {criterion}')
-
-    def setScore(self, name: str, objective: str = None):
-        pass
-
     def function(self, *attributes: typing.Callable | str) -> typing.Callable:
         """
         Use this decorator to make minecraft function

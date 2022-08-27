@@ -1,3 +1,7 @@
+from minecraft import commands
+from minecraft.types import score
+from minecraft.types import scoreboard
+
 import dataclasses
 import typing
 import json
@@ -6,6 +10,11 @@ import os
 
 
 class Minecraft:
+    # Stores other classes
+    Commands: commands.Commands
+    Score: score.Score | typing.Callable[[str, int | score.Score], score.Score]
+    Scoreboard: scoreboard.Scoreboard | typing.Callable[[str, str], scoreboard.Scoreboard]
+
     # Stores temporary variables
     @dataclasses.dataclass
     class Temporary:
@@ -71,6 +80,11 @@ class Minecraft:
                 self.settings.pack_format = 10
 
         self.__generate_tree__()
+
+        # Sets classes
+        self.Commands = commands.Commands(self)
+        self.Score = score._Score(self)
+        self.Scoreboard = scoreboard.getScoreboard(self)
 
     # Generates datapack directories
     def __generate_tree__(self):
