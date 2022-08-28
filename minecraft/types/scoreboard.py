@@ -43,3 +43,9 @@ class Scoreboard:
             f'scoreboard objectives setdisplay sidebar'
         )
         return self
+
+    def __hash__(self) -> int:
+        return self.name.__hash__()+self.criterion.__hash__()*10+self.framework.prefixName.__hash__()
+
+    def __eq__(self, other: _Scoreboard) -> bool:
+        return self.__hash__() == other.__hash__()

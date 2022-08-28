@@ -22,9 +22,6 @@ class Settings:
 
 
 class Minecraft:
-    # Bundle
-    constants: typing.List[str] = list()
-
     # Stores other classes
     Commands: commands.Commands
     Score: score.Score.__class__
@@ -33,19 +30,19 @@ class Minecraft:
     # Stores temporary variables
     @dataclasses.dataclass
     class Temporary:
-        returning: typing.List[score.Score.__class__]
-        function: typing.List[str]
+        returning: typing.List[score.Score.__class__] = dataclasses.field(default_factory=list)
+        variables: typing.List[score.Score.__class__] = dataclasses.field(default_factory=list)
+        function: typing.List[str] = dataclasses.field(default_factory=list)
 
-    temporary = Temporary(
-        returning=list(),
-        function=list()
-    )
+    temporary = Temporary()
 
     # Stores results
     @dataclasses.dataclass
     class Generated:
         functions: typing.Dict[str, typing.List[str]]
         attributes: typing.Dict[str, typing.List[str]]
+        scores: typing.List[score.Score] = dataclasses.field(default_factory=list)
+        scoreboards: typing.List[scoreboard.Scoreboard] = dataclasses.field(default_factory=list)
 
     generated = Generated(
         functions={
@@ -56,12 +53,16 @@ class Minecraft:
             'tick': []
         }
     )
+    
+    prefixName: str
 
     def __init__(self, settings: None | Settings = None):
         if settings is not None:
             self.settings = settings
         else:
             self.settings = Settings()
+        
+        self.prefixName = f'{self.settings.prefix_generated}{self.settings.project_name}'
 
         # Calculates pack format
         version = list(map(int, self.settings.version.split('.')))

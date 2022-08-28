@@ -2,7 +2,7 @@ from minecraft.core import *
 
 Minecraft = Minecraft(
     settings=Settings(
-        prefix_generated='hell_'
+        project_name='example'
     )
 )
 
@@ -20,7 +20,6 @@ def pow2(a: Score):
 @Commands.function('load')
 def main():
     Commands.print(f'{pow2(Score("A", 5))}')
-    pass
 
 
 Minecraft.compile()

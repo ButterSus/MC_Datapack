@@ -17,7 +17,7 @@ class Score:
     scoreboard: Minecraft.Scoreboard
 
     def __init__(self, name: str, value: int | _Score = 0, scoreboard: str | Minecraft.Scoreboard = None, *,
-                 isExternal: bool = False, whereToPlace: str = None):
+                 isExternal: bool = False, whereToPlace: str = None, isPushable: bool = True):
         if scoreboard is None:
             scoreboard = self.framework.Scoreboard(
                 name=f'{self.framework.settings.project_name}',
@@ -33,11 +33,13 @@ class Score:
         self.name = name
         self.scoreboard = scoreboard
 
+        if isPushable:
+            self.framework.temporary.variables.append(self)
+
         if isExternal:
             return
 
         if isinstance(value, int):
-            value: int
             self.framework.Commands.exec(
                 f'scoreboard players set {self.name} '
                 f'{self.scoreboard.gameName} {value}',
@@ -45,7 +47,6 @@ class Score:
             )
 
         if isinstance(value, self.__class__):
-            value: _Score
             self.framework.Commands.exec(
                 f'scoreboard players operation {self.name} {self.scoreboard.gameName} = '
                 f'{value.name} {value.scoreboard.gameName}',
@@ -67,28 +68,28 @@ class Score:
 
     def push(self):
         self.framework.Commands.exec(
-            f'execute store result storage {Score(str(), isExternal=True).scoreboard.gameName} '
+            f'execute store result storage {self.framework.prefixName} '
             f'__{constants.argPrefix} int 1 run scoreboard players get {self.name} {self.scoreboard.gameName}'
         )
 
         self.framework.Commands.exec(
             f'data modify storage '
-            f'{Score(str(), isExternal=True).scoreboard.gameName} __{constants.stackName} append from storage '
-            f'{Score(str(), isExternal=True).scoreboard.gameName} __{constants.argPrefix}'
+            f'{self.framework.prefixName} __{constants.stackName} append from storage '
+            f'{self.framework.prefixName} __{constants.argPrefix}'
         )
 
     def pop(self):
         self.framework.Commands.exec(
             f'execute store result score {self.name} {self.scoreboard.gameName} run data get storage '
-            f'{Score(str(), isExternal=True).scoreboard.gameName} __{constants.stackName}[-1]'
+            f'{self.framework.prefixName} __{constants.stackName}[-1]'
         )
 
         self.framework.Commands.exec(
-            f'data remove storage {Score(str(), isExternal=True).scoreboard.gameName} __{constants.stackName}[-1]'
+            f'data remove storage {self.framework.prefixName} __{constants.stackName}[-1]'
         )
 
     def _newConst(self, value: int) -> _Score:
-        if f'__{constants.constPrefix}{value}' in self.framework.constants:
+        if f'__{constants.constPrefix}{value}' in self.framework.generated.scores:
             return Score(f'__{constants.constPrefix}{value}', isExternal=True,
                          whereToPlace=f'__{constants.setupFunctionName}')
         return Score(f'__{constants.constPrefix}{value}', value,
@@ -209,3 +210,9 @@ class Score:
 
     def __str__(self) -> str:
         return f'${{{self.name}:{self.scoreboard.name}}}'
+
+    def __hash__(self) -> int:
+        return self.name.__hash__()+self.scoreboard.__hash__()
+
+    def __eq__(self, other: _Score) -> bool:
+        return self.__hash__() == other.__hash__()
