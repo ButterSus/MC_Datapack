@@ -41,8 +41,8 @@ class Minecraft:
     class Generated:
         functions: typing.Dict[str, typing.List[str]]
         attributes: typing.Dict[str, typing.List[str]]
-        scores: typing.List[score.Score] = dataclasses.field(default_factory=list)
-        scoreboards: typing.List[scoreboard.Scoreboard] = dataclasses.field(default_factory=list)
+        scores: typing.Set[tuple[score.Score, int]] = dataclasses.field(default_factory=set)
+        scoreboards: typing.Set[scoreboard.Scoreboard] = dataclasses.field(default_factory=set)
 
     generated = Generated(
         functions={
@@ -151,8 +151,19 @@ class Minecraft:
                     )
                 )
 
+        # Generates used scoreboards and scores in SETUP function
+        for variable in self.generated.scoreboards:
+            variable.__init__(variable.name, variable.criterion)
+
+        for variable, value in self.generated.scores:
+            variable.__init__(variable.name, value, variable.scoreboard)
+
+        self.generated.functions[f'__{const.setupFunctionName}'] = self.temporary.function
+        self.temporary.function = []
+
         # Generates function files
         for name, function in self.generated.functions.items():
             with open(f'data/{self.settings.prefix_generated}{self.settings.project_name}/'
                       f'functions/{name}.mcfunction', 'w') as file:
                 file.write('\n'.join(function))
+

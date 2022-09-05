@@ -1,3 +1,4 @@
+from __future__ import annotations
 import typing
 import warnings
 import json
@@ -12,11 +13,11 @@ if typing.TYPE_CHECKING:
 
 class Commands:
     """
-    This class stores all commands
+    This types stores all commands
     """
-    framework: 'Minecraft'
+    framework: Minecraft
 
-    def __init__(self, framework: 'Minecraft'):
+    def __init__(self, framework: Minecraft):
         self.framework = framework
 
     def exec(self, command: str, *, whereToPlace: str = None) -> None:
@@ -41,6 +42,8 @@ class Commands:
                 len(fullArgSpec.args)
             )])
 
+            isRecursive = False
+
             # Check attributes
             for attribute in attributes[1::]:
                 attribute: str = attribute.lower().strip()
@@ -55,20 +58,26 @@ class Commands:
                     self.framework.generated.attributes['tick'].append(function.__name__)
                     continue
 
-                if attribute not in constants.attributes.recursive:
-                    self.framework.temporary.variables = {}
+                if attribute in constants.attributes.recursive:
+                    isRecursive = True
                     continue
 
                 warnings.warn(f'Wrong attribute {attribute}')
+
+            if not isRecursive:
+                self.framework.temporary.variables = list(filter(
+                    lambda x: x.name.startswith(f'__{constants.argPrefix}'),
+                    self.framework.temporary.variables
+                ))
 
             # Return handling
             for i in range(len(self.framework.temporary.returning)):
                 self.framework.Score(f'__{constants.returnPrefix}{i}', self.framework.temporary.returning[i],
                                      isPushable=False)
 
-                # Adding stack push
-                for score in self.framework.temporary.variables.__reversed__():
-                    score.pop()
+            # Adding stack pop
+            for score in self.framework.temporary.variables.__reversed__():
+                score.pop()
 
             # Writing function
             self.framework.generated.functions[function.__name__] = self.framework.temporary.function

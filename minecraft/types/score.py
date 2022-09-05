@@ -17,11 +17,11 @@ class Score:
     scoreboard: Minecraft.Scoreboard
 
     def __init__(self, name: str, value: int | _Score = 0, scoreboard: str | Minecraft.Scoreboard = None, *,
-                 isExternal: bool = False, whereToPlace: str = None, isPushable: bool = True):
+                 isConst: bool = False, isExternal: bool = False, isPushable: bool = True):
         if scoreboard is None:
             scoreboard = self.framework.Scoreboard(
                 name=f'{self.framework.settings.project_name}',
-                isExternal=True
+                isConst=True
             )
 
         if isinstance(scoreboard, str):
@@ -33,8 +33,13 @@ class Score:
         self.name = name
         self.scoreboard = scoreboard
 
+        if isConst:
+            self.framework.generated.scores.add((self, value))
+            return
+
         if isPushable:
-            self.framework.temporary.variables.append(self)
+            if self not in self.framework.temporary.variables:
+                self.framework.temporary.variables.append(self)
 
         if isExternal:
             return
@@ -43,14 +48,12 @@ class Score:
             self.framework.Commands.exec(
                 f'scoreboard players set {self.name} '
                 f'{self.scoreboard.gameName} {value}',
-                whereToPlace=whereToPlace
             )
 
         if isinstance(value, self.__class__):
             self.framework.Commands.exec(
                 f'scoreboard players operation {self.name} {self.scoreboard.gameName} = '
-                f'{value.name} {value.scoreboard.gameName}',
-                whereToPlace=whereToPlace
+                f'{value.name} {value.scoreboard.gameName}'
             )
 
     @staticmethod
@@ -89,11 +92,7 @@ class Score:
         )
 
     def _newConst(self, value: int) -> _Score:
-        if f'__{constants.constPrefix}{value}' in self.framework.generated.scores:
-            return Score(f'__{constants.constPrefix}{value}', isExternal=True,
-                         whereToPlace=f'__{constants.setupFunctionName}')
-        return Score(f'__{constants.constPrefix}{value}', value,
-                     whereToPlace=f'__{constants.setupFunctionName}')
+        return Score(f'__{constants.constPrefix}{value}', value=value, isConst=True)
 
     @staticmethod
     def _extendedOperatorTemplate(action: str, operation: str) -> typing.Callable[[int | _Score], _Score]:

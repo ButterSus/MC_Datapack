@@ -20,10 +20,15 @@ class Scoreboard:
     gameName: str
     criterion: str
 
-    def __init__(self, name: str, criterion: str = 'dummy', *, isExternal: bool = False):
+    def __init__(self, name: str, criterion: str = 'dummy', *,
+                 isConst: bool = False, isExternal: bool = False):
         self.name = name
         self.gameName = self.framework.settings.prefix_generated + name
         self.criterion = criterion
+
+        if isConst:
+            self.framework.generated.scoreboards.add(self)
+            return
 
         if isExternal:
             return

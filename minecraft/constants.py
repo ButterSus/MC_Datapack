@@ -9,7 +9,7 @@ class attributes:
 
     recursive = [
         'recursive'
-    ]  # Optimization attribute, use it if function will be called without recursions
+    ]
 
 
 setupFunctionName = 'SETUP'
