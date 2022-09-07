@@ -6,7 +6,7 @@ DOCS: https://github.com/ButterSus/Kiwi/docs.md
 
 import sys
 
-# PyKiwi
-from PyKiwi.core import PyKiwi, Minecraft, Score, Scoreboard
-from PyKiwi.enums.scoreboard.criteria import Criteria
+# pyKiwi
+from pyKiwi.core import PyKiwi, Minecraft, Score, Scoreboard
+from pyKiwi.enums.scoreboard.criteria import Criteria
 PyKiwi._init_module = sys.modules[__name__]

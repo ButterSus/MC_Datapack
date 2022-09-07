@@ -7,11 +7,12 @@ import typing
 
 
 if typing.TYPE_CHECKING:
-    import PyKiwi as core
+    import pyKiwi.core as core
+
+
+def run(self: core.PyKiwi, command: str):
+    self.Compiler.append(command)
 
 
 def main(self: core.PyKiwi, command: str):
-    """
-    Executes command
-    """
-    print(command)
+    return lambda: run(self, command)

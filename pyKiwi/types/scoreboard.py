@@ -5,10 +5,9 @@ Open source project by ButterSss
 from __future__ import annotations
 import typing
 
-from PyKiwi.enums.scoreboard.criteria import Criteria
-
 if typing.TYPE_CHECKING:
-    import PyKiwi as core
+    from pyKiwi.enums.scoreboard.criteria import Criteria
+    import pyKiwi.core as core
 
 
 class Scoreboard:
@@ -22,7 +21,7 @@ class Scoreboard:
     def __init__(self, task_name: str, criteria: Criteria):
         self.task_name = task_name
         self.criteria = criteria
-        print('ok')
+        pass
 
 
 def getScoreboard(_framework: core.PyKiwi) -> typing.Type[Scoreboard]:

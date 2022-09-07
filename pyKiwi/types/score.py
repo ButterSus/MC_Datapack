@@ -7,7 +7,7 @@ import typing
 
 
 if typing.TYPE_CHECKING:
-    import PyKiwi as core
+    import pyKiwi.core as core
 
 
 class Score:
@@ -16,7 +16,7 @@ class Score:
     """
     framework: core.PyKiwi
 
-    def __init__(self):
+    def __init__(self, player_name: str, initial_value: int | Score):
         pass
 
 
